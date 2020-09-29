@@ -1,0 +1,32 @@
+{
+  "project_info": {
+    "project_number": "856879334766",
+    "firebase_url": "https://ethiotel-99258.firebaseio.com",
+    "project_id": "ethiotel-99258",
+    "storage_bucket": "ethiotel-99258.appspot.com"
+  },
+  "client": [{
+    "client_info": {
+      "mobilesdk_app_id": "1:856879334766:android:dd345d4922964b4ce5ad7f",
+      "android_client_info": {
+        "package_name": "com.uffey.ethiotel"
+      }
+    },
+    "oauth_client": [{
+      "client_id": "856879334766-pb1esg10n351aslm48bj5ie5nc4t9k8c.apps.googleusercontent.com",
+      "client_type": 3
+    }],
+    "api_key": [{
+      "current_key": "AIzaSyCddvlgzmLAgZ6dWuT6WCG0Lc_Bgbbvi9E"
+    }],
+    "services": {
+      "appinvite_service": {
+        "other_platform_oauth_client": [{
+          "client_id": "856879334766-pb1esg10n351aslm48bj5ie5nc4t9k8c.apps.googleusercontent.com",
+          "client_type": 3
+        }]
+      }
+    }
+  }],
+  "configuration_version": "1"
+}
