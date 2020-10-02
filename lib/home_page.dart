@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:ussd/ussd.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -50,46 +51,51 @@ class HomePage extends GetView<HomeController> {
                 color: Colors.black,
               ),
             ),
-            Obx(
-              () {
-                return ListTile(
-                  leading: Icon(Icons.language),
-                  title: ToggleButtons(
-                    selectedColor: Colors.white,
-                    fillColor: Colors.black,
-                    color: Colors.black,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("አማርኛ"),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("English"),
-                      ),
-                    ],
-                    onPressed: (int index) {
-                      controller.setSelectedLang = index;
-                    },
-                    isSelected: controller.selectedLang,
-                  ),
+            ListTile(
+              leading: Icon(Icons.language),
+              title: Obx(() {
+                return ToggleButtons(
+                  selectedColor: Colors.white,
+                  fillColor: Colors.black,
+                  color: Colors.black,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("አማርኛ"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("English"),
+                    ),
+                  ],
+                  onPressed: (int index) {
+                    controller.setSelectedLang = index;
+                  },
+                  isSelected: controller.selectedLang,
                 );
-              },
+              }),
             ),
             Divider(),
             ListTile(
               leading: Icon(Icons.share),
               title: Text('shareApp'.tr),
               onTap: () {
-                Share();
+                Share.share(
+                    'Download Ethio Telecom Falash Recharger Android App From Play store to recharge your phone faster https://play.google.com/store/apps/details?id=com.uffey.ethiotel&hl=en_US',
+                    subject: 'Recharger Your Phone Faster');
               },
             ),
             ListTile(
               leading: Icon(Icons.rate_review),
               title: Text('rateApp'.tr),
-              onTap: () {
-                // Update the state of the app.
-                // ...
+              onTap: () async {
+                const url =
+                    'https://play.google.com/store/apps/details?id=com.uffey.ethiotel&hl=en_US';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
               },
             ),
             ListTile(
@@ -108,12 +114,12 @@ class HomePage extends GetView<HomeController> {
             children: [
               Container(
                 color: Colors.white,
-                height: Get.context.height * 0.20,
+                height: Get.context.height * 0.25,
                 width: Get.context.width,
                 margin: EdgeInsets.all(0),
                 padding: EdgeInsets.all(0),
                 child: Card(
-                  margin: EdgeInsets.all(0),
+                  margin: EdgeInsets.zero,
                   child: Column(
                     children: [
                       SizedBox(
@@ -264,7 +270,7 @@ class HomePage extends GetView<HomeController> {
                 children: [
                   Container(
                     height: 45,
-                    width: 170,
+                    width: 165,
                     child: RaisedButton(
                       color: Colors.black87,
                       textColor: Colors.white,
@@ -289,13 +295,15 @@ class HomePage extends GetView<HomeController> {
                   ),
                   Container(
                     height: 45,
-                    width: 170,
+                    width: 165,
+                    margin: EdgeInsets.all(0),
+                    padding: EdgeInsets.all(0),
                     child: RaisedButton(
                       color: Colors.black87,
                       textColor: Colors.white,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Icon(
                             Icons.card_giftcard,
@@ -304,6 +312,7 @@ class HomePage extends GetView<HomeController> {
                             "transferBalance".tr,
                             textAlign: TextAlign.center,
                             overflow: TextOverflow.clip,
+                            maxLines: 2,
                           ),
                         ],
                       ),

@@ -1,4 +1,6 @@
-import 'package:contact_picker/contact_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:ethiotel/camera_page.dart';
 import 'package:ethiotel/home_page.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 import 'dart:io';
 import 'dart:ui';
 import 'dart:async';
@@ -34,10 +37,16 @@ class _DetailScreenState extends State<DetailScreen> {
   String errorMessage = "";
 
   initPkgs() async {
-    var initPatterns = [
-      r"^[0-9]{3}\s[0-9]{3}\s[0-9]{4}\s[0-9]{4}$",
-      r"^[0-9]{5}\s[0-9]{4}\s[0-9]{5}$",
-    ];
+    DateFormat dFormat = DateFormat("DD-MM-yyyy");
+
+    var initPatterns = {
+      'patterns': [
+        r"^[0-9]{3}\s[0-9]{3}\s[0-9]{4}\s[0-9]{4}$",
+        r"^[0-9]{5}\s[0-9]{4}\s[0-9]{5}$",
+      ],
+      'lastUpdated':
+          DateTime.parse(dFormat.parse("10-1-2020").toIso8601String()),
+    };
     try {
       await Hive.initFlutter();
       var box = await Hive.openBox('etlbox');
@@ -45,11 +54,30 @@ class _DetailScreenState extends State<DetailScreen> {
       if (etlPatterns == null) {
         box.put("etlPatterns", initPatterns);
         setState(() {
-          _registeredPatterns = initPatterns;
+          _registeredPatterns = initPatterns['patterns'];
         });
       } else {
         setState(() {
-          _registeredPatterns = etlPatterns;
+          _registeredPatterns = etlPatterns['patterns'];
+        });
+      }
+
+      await Firebase.initializeApp();
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      var connectivityResult = await (Connectivity().checkConnectivity());
+
+      if (connectivityResult == ConnectivityResult.mobile ||
+          connectivityResult == ConnectivityResult.wifi) {
+        print("updated....1");
+
+        CollectionReference packages = firestore.collection('etlPatterns');
+        DocumentSnapshot snap =
+            await packages.doc('dVIaYbsyn61cJuXK9dM2').get();
+
+        box.put("etlPatterns", snap.data());
+        setState(() {
+          _registeredPatterns = snap.data()['patterns'];
         });
       }
       setState(() {

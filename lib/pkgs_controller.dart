@@ -72,12 +72,9 @@ class PkgsController extends GetxController {
         CollectionReference packages = firestore.collection('packages');
         DocumentSnapshot snap =
             await packages.doc('El582p8hHDHEVYOyLmP5').get();
-        if (DateTime.parse(etlPkgs['lastUpdated'])
-            .isBefore(DateTime.parse(snap.data()['lastUpdated']))) {
-          box.put("etlpkgs", snap.data());
-          setPkgsList = snap.data();
-        }
-        print(snap.data());
+
+        box.put("etlpkgs", snap.data());
+        setPkgsList = snap.data();
       }
       setIsReady = true;
     } catch (e) {
